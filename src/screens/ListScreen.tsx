@@ -1,11 +1,39 @@
-import React from 'react';
+import React, { ChangeEvent, KeyboardEvent, useState } from 'react';
+import {nanoid} from 'nanoid';
 
 type Props = {};
 
+type Task = {
+    id: string;
+    label: string;
+}
+
 const ListScreen: React.FC<Props> = () => {
-    return (
-        <div> List view</div>
-    )
+    const [tasks, setTasks] = useState<Task[]>([]);
+    const [newTaskLabel, setNewTaskLabel] = useState('');
+
+    const handleNewTaskLabelChange = (e: ChangeEvent<HTMLInputElement>) => setNewTaskLabel(e.target.value);
+    
+    const handleNewTaskLabelKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
+     if (e.key === 'Enter' && newTaskLabel !== '') {
+        setTasks((tasks) => [...tasks,{id: nanoid(), label: newTaskLabel}]);
+        setNewTaskLabel('');
+        }
+    };
+
+    return ( 
+    <div>
+        <ul>
+            {tasks.map((task: Task) => 
+                <li key={task.id}>{task.label}</li>)}
+        </ul>
+        <input 
+            value={newTaskLabel} 
+            onChange={handleNewTaskLabelChange} 
+            onKeyDown={handleNewTaskLabelKeyDown}/> 
+    </div>
+    );
+    
 };
 
 export default ListScreen;
