@@ -4,7 +4,13 @@ import {BrowserRouter, Route, Routes} from 'react-router-dom'
 import ListScreen from './screens/ListScreen';
 import FocusScreen from './screens/FocusScreen';
 
-export type Task = {
+type Props = {
+  tasks: Task[];
+  setTasks: React.Dispatch<React.SetStateAction<Task[]>>;
+  updateTaskCompletion: (taskId: string, isComplete: boolean) => void;
+};
+
+type Task = {
   id: string;
   label: string;
   isComplete: boolean;
@@ -12,7 +18,18 @@ export type Task = {
 
 function App() {
  const [tasks, setTasks] = useState<Task[]>([]);
- const tasksProps = {tasks, setTasks}
+
+ const updateTaskCompletion = (taskId: string, isComplete: boolean) => {
+     setTasks(tasks => 
+         tasks.map(task => {
+             if (task.id === taskId) 
+                 return {...task, isComplete }
+             return task;
+         })
+     ); 
+  };
+
+ const tasksApi = {tasks, setTasks, updateTaskCompletion};
 
   return (
     <BrowserRouter>
@@ -24,8 +41,8 @@ function App() {
       <br />
 
       <Routes>
-        <Route path="/" element={<ListScreen {...tasksProps}/>}/>
-        <Route path="/focus" element={<FocusScreen {...tasksProps}/>} />
+        <Route path="/" element={<ListScreen {...tasksApi}/>}/>
+        <Route path="/focus" element={<FocusScreen {...tasksApi}/>} />
       </Routes>  
     </BrowserRouter>
   );

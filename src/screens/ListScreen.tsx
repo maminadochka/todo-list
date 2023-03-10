@@ -4,15 +4,16 @@ import {nanoid} from 'nanoid';
 type Props = {
     tasks: Task[];
     setTasks: React.Dispatch<React.SetStateAction<Task[]>>;
+    updateTaskCompletion: (taskId: string, isComplete: boolean) => void;
 };
 
-export type Task = {
+type Task = {
     id: string;
     label: string;
     isComplete: boolean;
 }
 
-const ListScreen: React.FC<Props> = ({ tasks, setTasks}) => {
+const ListScreen: React.FC<Props> = ({ tasks, setTasks, updateTaskCompletion}) => {
     const [newTaskLabel, setNewTaskLabel] = useState('');
 
     const handleNewTaskLabelChange = (e: ChangeEvent<HTMLInputElement>) => setNewTaskLabel(e.target.value);
@@ -24,15 +25,10 @@ const ListScreen: React.FC<Props> = ({ tasks, setTasks}) => {
         }
     };
 
-    const handleTaskCompleteChange = (handledTask: Task) => (e: ChangeEvent<HTMLInputElement>) => {
-        setTasks(tasks => 
-            tasks.map(task => {
-                if (task.id === handledTask.id) 
-                    return {...task, isComplete: e.target.checked}
-                return task;
-            })
-        ); 
-    };
+    const handleTaskCompleteChange = 
+        (task: Task) => (e: ChangeEvent<HTMLInputElement>) => {
+            updateTaskCompletion(task.id, e.target.checked)
+        };
 
     const handleClearClick = () => 
         setTasks((tasks) => tasks.filter((task) => !task.isComplete))

@@ -3,18 +3,30 @@ import React from 'react'
 type Props = {
     tasks: Task[];
     setTasks: React.Dispatch<React.SetStateAction<Task[]>>;
+    updateTaskCompletion: (taskId: string, isComplete: boolean) => void;
 };
 
-export type Task = {
+type Task = {
     id: string;
     label: string;
     isComplete: boolean;
 } 
 
-const FocusScreen: React.FC<Props> = ({tasks}) => {
-    const task = tasks[0]
+const FocusScreen: React.FC<Props> = ({tasks, updateTaskCompletion}) => {
+    const task = tasks.filter((task) => !task.isComplete)[0]
 
-    return task ? <div>{task.label}</div> : <div>No tasks</div>;
+    const handledMarkComplited = () => {
+        updateTaskCompletion(task.id, true)
+    };
+
+    return task ? (
+    <div>
+       <div>{task.label}</div>
+        <button onClick={handledMarkComplited}>mark completed</button>
+    </div>
+    )  :  (
+    <div>No incomplete tasks</div>
+    );
 };
 
 export default FocusScreen;
