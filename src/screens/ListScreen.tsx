@@ -1,26 +1,15 @@
 import React, { ChangeEvent, KeyboardEvent, useState } from 'react';
-import {nanoid} from 'nanoid';
+import {Task, Props} from '../types'
 
-type Props = {
-    tasks: Task[];
-    setTasks: React.Dispatch<React.SetStateAction<Task[]>>;
-    updateTaskCompletion: (taskId: string, isComplete: boolean) => void;
-};
 
-type Task = {
-    id: string;
-    label: string;
-    isComplete: boolean;
-}
-
-const ListScreen: React.FC<Props> = ({ tasks, setTasks, updateTaskCompletion}) => {
+const ListScreen: React.FC<Props> = ({ addTask, tasks, setTasks, updateTaskCompletion}) => {
     const [newTaskLabel, setNewTaskLabel] = useState('');
 
     const handleNewTaskLabelChange = (e: ChangeEvent<HTMLInputElement>) => setNewTaskLabel(e.target.value);
     
     const handleNewTaskLabelKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
      if (e.key === 'Enter' && newTaskLabel !== '') {
-        setTasks((tasks) => [...tasks,{id: nanoid(), label: newTaskLabel, isComplete: false}]);
+            addTask({label: newTaskLabel})
         setNewTaskLabel('');
         }
     };
